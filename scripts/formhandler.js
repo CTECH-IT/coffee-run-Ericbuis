@@ -1,9 +1,10 @@
 (function (window) {
     'use strict';
 
+    
     let App = window.App || {};
     let $ = window.jQuery;
-
+    
     function FormHandler(selector) {
 
         if (!selector) {
@@ -30,8 +31,24 @@
                 console.log(item.name + 'is' + item.value);
             });
             console.log(data);
+            func(data); // call the function that was passed in on the data from the form
+
+            this.reset(); //reset the form
+            this.element[0].focus(); // focus on the first field
         });
     }
+
+    FormHandler.prototype.addInputHandler = function (func) {
+        console.log('Setting input handler for form');
+        this.$formElement.on('input', '[name="emailAddress"]', function (event) {
+            let emailAddress = event.target.value;
+            if (func(emailAddress) == true) { // use validation.js to check email
+              event.target.setCustomValidity('');
+            } else {
+              event.target.setCustomValidity(emailAddress + ' is not an authorized email address!');
+            }     
+        });
+    };
 
     App.FormHandler = FormHandler;
     window.App = App;
